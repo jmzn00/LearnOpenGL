@@ -10,6 +10,7 @@ find_package(glfw3 REQUIRED)
 
 add_executable(LearnOpenGL
     src/main.cpp
+    src/Shader.cpp
     external/glad/src/glad.c
 )
 
