@@ -17,6 +17,7 @@ add_executable(LearnOpenGL
 target_include_directories(LearnOpenGL PRIVATE
     ${CMAKE_SOURCE_DIR}/external
     ${CMAKE_SOURCE_DIR}/external/glad/include
+    ${CMAKE_SOURCE_DIR}/external/glm
 )
 
 target_link_libraries(LearnOpenGL
