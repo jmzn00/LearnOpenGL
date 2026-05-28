@@ -5,4 +5,5 @@
 *.a
 *.so
 *.swp
+*.pdf
 compile_commands.json
