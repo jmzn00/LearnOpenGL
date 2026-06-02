@@ -12,6 +12,7 @@ add_executable(LearnOpenGL
     src/main.cpp
     src/Shader.cpp
     external/glad/src/glad.c
+    camera/Camera.cpp
 )
 
 target_include_directories(LearnOpenGL PRIVATE
