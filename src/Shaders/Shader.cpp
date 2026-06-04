@@ -93,3 +93,21 @@ void Shader::setVec3(const std::string &name, float x, float y, float z) const
 {
     glUniform3f(glGetUniformLocation(ID, name.c_str()), x, y, z);
 }
+void Shader::setVec3(const std::string &name, glm::vec3 value) const
+{
+    glUniform3f(glGetUniformLocation(ID, name.c_str()), value.x, value.y, value.z);   
+}
+void Shader::setMaterial(Material material) const
+{
+    glUniform3f(glGetUniformLocation(ID, "material.ambient")
+    , material.ambient.x, material.ambient.y, material.ambient.z);
+
+    glUniform3f(glGetUniformLocation(ID, "material.diffuse")
+    , material.diffuse.x, material.diffuse.y, material.diffuse.z);
+
+    glUniform3f(glGetUniformLocation(ID, "material.specular")
+    , material.specular.x, material.specular.y, material.specular.z);
+
+    glUniform1f(glGetUniformLocation(ID, "material.shininess")
+    , material.shininess);
+}

@@ -10,16 +10,19 @@ find_package(glfw3 REQUIRED)
 
 add_executable(LearnOpenGL
     src/main.cpp
-    src/Shader.cpp
+    src/Shaders/Shader.cpp
+    src/Camera/Camera.cpp
+    src/Material/Material.cpp
     external/glad/src/glad.c
-    camera/Camera.cpp
 )
 
 target_include_directories(LearnOpenGL PRIVATE
     ${CMAKE_SOURCE_DIR}/external
     ${CMAKE_SOURCE_DIR}/external/glad/include
     ${CMAKE_SOURCE_DIR}/external/glm
-    ${CMAKE_SOURCE_DIR}/camera
+    ${CMAKE_SOURCE_DIR}/src/Camera
+    ${CMAKE_SOURCE_DIR}/src/Shaders
+    ${CMAKE_SOURCE_DIR}/src/Material
 )
 
 target_link_libraries(LearnOpenGL

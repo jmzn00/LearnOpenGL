@@ -6,6 +6,7 @@
 #include <algorithm>
 #include "Shader.h"
 #include "Camera.h"
+#include "Material.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -129,7 +130,7 @@ void processInput(GLFWwindow *window)
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         camera->ProcessKeyboard(RIGHT, deltaTime);
 }
-glm::vec3 lightPos(1.2f, 1.0f, -2.0f);
+glm::vec3 lightPos(1.2f, 0.0f, -2.0f);
 int main()
 {
     Camera camera = Camera(glm::vec3(0.0f, 0.0f, 3.0f),
@@ -193,13 +194,21 @@ int main()
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*) (6 * sizeof(float)));
     glEnableVertexAttribArray(2);
 
-    Shader lightingShader("shaders/shader.vs", "shaders/shader.fs");
+    Shader lightingShader("src/Shaders/Vertex/shader.vs", "src/Shaders/Fragment/shader.fs");
     lightingShader.use();
     lightingShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
     lightingShader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
     lightingShader.setVec3("lightPos", lightPos.x, lightPos.y, lightPos.z);
+    
+    //material
+    lightingShader.setMaterial(Material::Gold());
 
-    Shader lightCubeShader("shaders/lightShader.vs", "shaders/lightShader.fs");
+    // light
+    lightingShader.setVec3("light.ambient", 0.1f, 0.1f, 0.1f);
+    lightingShader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f); // darkened
+    lightingShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+
+    Shader lightCubeShader("src/Shaders/Vertex/lightShader.vs", "src/Shaders/Fragment/lightShader.fs");
     
     unsigned int lightVAO;
     glGenVertexArrays(1, &lightVAO);
@@ -273,7 +282,7 @@ int main()
     glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));     
 
     float lightAngle = 0.0f;
-    const float lightRadius = 3.0f;
+    const float lightRadius = 3.0f;    
     
     while (!glfwWindowShouldClose(window))
     {        
@@ -283,9 +292,16 @@ int main()
 
         lightAngle += deltaTime;
         lightPos.x = lightRadius * cos(lightAngle);
-        lightPos.z = lightRadius * sin(lightAngle);
-        lightPos.y = 1.0f;
+        lightPos.z = lightRadius * sin(lightAngle);    
 
+        glm::vec3 lightColor = glm::vec3(1.0f);
+        //lightColor.x = sin(glfwGetTime() * 2.0f) * 0.5f + 0.5f;
+        //lightColor.y = sin(glfwGetTime() * 0.7f) * 0.5f + 0.5f;
+        //lightColor.z = sin(glfwGetTime() * 1.3f) * 0.5f + 0.5f;
+        
+        glm::vec3 diffuseColor = lightColor * glm::vec3(0.5f);
+        glm::vec3 ambientColor = lightColor * glm::vec3(0.2f);
+        
         processInput(window);             
 
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -297,6 +313,8 @@ int main()
         lightingShader.use();
         lightingShader.setVec3("viewPos", camera.Position.x, camera.Position.y, camera.Position.z);
         lightingShader.setVec3("lightPos", lightPos.x, lightPos.y, lightPos.z);
+        lightingShader.setVec3("light.ambient", ambientColor);
+        lightingShader.setVec3("light.diffuse", diffuseColor);
 
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
@@ -309,7 +327,8 @@ int main()
         model = glm::scale(model, glm::vec3(0.2f));
 
         lightCubeShader.use();
-
+        lightCubeShader.setVec3("color", ambientColor);                
+        
         glUniformMatrix4fv(
             glGetUniformLocation(lightCubeShader.ID, "model"),
             1, GL_FALSE, glm::value_ptr(model)
