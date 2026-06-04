@@ -205,7 +205,7 @@ int main()
 
     // light
     lightingShader.setVec3("light.ambient", 0.1f, 0.1f, 0.1f);
-    lightingShader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f); // darkened
+    lightingShader.setVec3("light.diffuse", 0.2f, 0.2f, 0.2f);
     lightingShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
 
     Shader lightCubeShader("src/Shaders/Vertex/lightShader.vs", "src/Shaders/Fragment/lightShader.fs");
