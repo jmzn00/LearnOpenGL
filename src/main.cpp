@@ -255,7 +255,6 @@ int main()
 */    
 
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::rotate(model, glm::radians(-75.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
     glm::mat4 view = glm::mat4(1.0f);
     view = camera.GetViewMatrix();
@@ -272,12 +271,20 @@ int main()
 
     unsigned int projectionLoc = glGetUniformLocation(lightingShader.ID, "projection");
     glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));     
+
+    float lightAngle = 0.0f;
+    const float lightRadius = 3.0f;
     
     while (!glfwWindowShouldClose(window))
     {        
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
+
+        lightAngle += deltaTime;
+        lightPos.x = lightRadius * cos(lightAngle);
+        lightPos.z = lightRadius * sin(lightAngle);
+        lightPos.y = 1.0f;
 
         processInput(window);             
 
@@ -288,6 +295,9 @@ int main()
         projection = glm::perspective(glm::radians(camera.Zoom), aspect, 0.1f, 100.0f);
 
         lightingShader.use();
+        lightingShader.setVec3("viewPos", camera.Position.x, camera.Position.y, camera.Position.z);
+        lightingShader.setVec3("lightPos", lightPos.x, lightPos.y, lightPos.z);
+
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 
