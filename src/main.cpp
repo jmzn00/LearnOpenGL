@@ -201,7 +201,7 @@ int main()
     lightingShader.setVec3("lightPos", lightPos.x, lightPos.y, lightPos.z);
     
     //material
-    lightingShader.setMaterial(Material::Gold());
+    lightingShader.setMaterial(Material::Silver());
 
     // light
     lightingShader.setVec3("light.ambient", 0.1f, 0.1f, 0.1f);
